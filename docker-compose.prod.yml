@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+    back:
+        restart: always
+    admin:
+        environment:
+            - GO_ENV=production
+        volumes:
+            - /etc/letsencrypt:/etc/letsencrypt
+        restart: always
+    db:
+        restart: always

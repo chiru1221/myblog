@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+option go_package = "bap/bap_back/blogprofile";
+
+package blogprofile;
+
+service Bap {
+    rpc Blog (BlogId) returns (BlogDetail) {}
+    rpc Blogs (NoId) returns (BlogList) {}
+    rpc Profile (NoId) returns (ProfileDetail) {}
+}
+
+message BlogId {
+    string id = 1;
+}
+
+message NoId {}
+
+message BlogDetail {
+    string id = 1;
+    string article = 2;
+    bool open = 3;
+    repeated string tag = 4;
+    string title = 5;
+    string date = 6;
+}
+
+message BlogList {
+    int32 total = 1;
+    repeated BlogDetail blogs = 2;
+    repeated string tags = 3;
+}
+
+message ProfileDetail {
+    string content = 1;
+    string date = 2;
+}

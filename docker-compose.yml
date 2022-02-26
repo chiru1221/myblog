@@ -1,0 +1,77 @@
+version: "3.8"
+
+services:
+
+    front:
+        image:
+            bap/front
+        ports:
+            - 3000:3000
+        tty: true
+        depends_on:
+            - back
+        networks:
+            - bap_net
+        
+    back:
+        image:
+            bap/back
+        tty: true
+        depends_on:
+            - "db"
+        secrets:
+            - slack-signing-secret
+            - slack-bot-user-oauth-token
+            - drive-api-service-account
+            - mongo-root
+            - mongo-root-password
+        networks:
+            - bap_net
+    
+    admin:
+        image:
+            bap/admin
+        tty: true
+        depends_on:
+            - "db"
+        ports:
+            - 5080:8080
+        secrets:
+            - slack-signing-secret
+            - slack-bot-user-oauth-token
+            - drive-api-service-account
+            - mongo-root
+            - mongo-root-password
+        networks:
+            - bap_net
+
+    
+    db:
+        image:
+            bap/db
+        # container stores the data to `/data/db`
+        volumes:
+            - ./bap_db/db:/data/db
+        secrets:
+            - mongo-root
+            - mongo-root-password
+        networks:
+            - bap_net
+
+
+secrets:
+    slack-signing-secret:
+        file: ./bap_back/secrets/.slack_signing_secret
+    slack-bot-user-oauth-token:
+        file: ./bap_back/secrets/.slack_bot_user_oauth_token
+    drive-api-service-account:
+        file: ./bap_back/secrets/.drive_api_service_account
+    mongo-root:
+        file: ./bap_db/secrets/.mongo_root
+    mongo-root-password:
+        file: ./bap_db/secrets/.mongo_root_password
+
+networks:
+  bap_net:
+    name: bap_net
+    driver: bridge
